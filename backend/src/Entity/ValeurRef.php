@@ -25,6 +25,10 @@ class ValeurRef
     #[ORM\Column(length: 10, nullable: true)]
     private ?string $valeur = null;
 
+    #[ORM\ManyToOne(inversedBy: 'valeurRefs')]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?MatiereBio $matiereBio = null;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -74,6 +78,18 @@ class ValeurRef
     public function setValeur(?string $valeur): static
     {
         $this->valeur = $valeur;
+
+        return $this;
+    }
+
+    public function getMatiereBio(): ?MatiereBio
+    {
+        return $this->matiereBio;
+    }
+
+    public function setMatiereBio(?MatiereBio $matiereBio): static
+    {
+        $this->matiereBio = $matiereBio;
 
         return $this;
     }

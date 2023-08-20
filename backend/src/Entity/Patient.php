@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\PatientRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: PatientRepository::class)]
@@ -24,6 +26,15 @@ class Patient
 
     #[ORM\Column(length: 3)]
     private ?string $age = null;
+
+    #[ORM\OneToMany(mappedBy: 'patient', targetEntity: Examen::class)]
+    private Collection $examens;
+
+    public function __construct()
+    {
+        $this->examens = new ArrayCollection();
+    }
+
 
     public function getId(): ?int
     {
@@ -74,6 +85,36 @@ class Patient
     public function setAge(string $age): static
     {
         $this->age = $age;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Examen>
+     */
+    public function getExamens(): Collection
+    {
+        return $this->examens;
+    }
+
+    public function addExamen(Examen $examen): static
+    {
+        if (!$this->examens->contains($examen)) {
+            $this->examens->add($examen);
+            $examen->setPatient($this);
+        }
+
+        return $this;
+    }
+
+    public function removeExamen(Examen $examen): static
+    {
+        if ($this->examens->removeElement($examen)) {
+            // set the owning side to null (unless already changed)
+            if ($examen->getPatient() === $this) {
+                $examen->setPatient(null);
+            }
+        }
 
         return $this;
     }

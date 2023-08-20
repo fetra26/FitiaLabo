@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\LaboratoireRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: LaboratoireRepository::class)]
@@ -33,6 +35,14 @@ class Laboratoire
 
     #[ORM\Column(length: 50, nullable: true)]
     private ?string $numeroLabo = null;
+
+    #[ORM\OneToMany(mappedBy: 'laboratoire', targetEntity: Examen::class)]
+    private Collection $examens;
+
+    public function __construct()
+    {
+        $this->examens = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -119,6 +129,36 @@ class Laboratoire
     public function setNumeroLabo(?string $numeroLabo): static
     {
         $this->numeroLabo = $numeroLabo;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Examen>
+     */
+    public function getExamens(): Collection
+    {
+        return $this->examens;
+    }
+
+    public function addExamen(Examen $examen): static
+    {
+        if (!$this->examens->contains($examen)) {
+            $this->examens->add($examen);
+            $examen->setLaboratoire($this);
+        }
+
+        return $this;
+    }
+
+    public function removeExamen(Examen $examen): static
+    {
+        if ($this->examens->removeElement($examen)) {
+            // set the owning side to null (unless already changed)
+            if ($examen->getLaboratoire() === $this) {
+                $examen->setLaboratoire(null);
+            }
+        }
 
         return $this;
     }

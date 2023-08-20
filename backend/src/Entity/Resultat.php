@@ -16,6 +16,14 @@ class Resultat
     #[ORM\Column(length: 10, nullable: true)]
     private ?string $valeur = null;
 
+    #[ORM\ManyToOne(inversedBy: 'resultats')]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?MatiereBio $matiereBio = null;
+
+    #[ORM\ManyToOne(inversedBy: 'resultats')]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?Examen $examen = null;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -29,6 +37,30 @@ class Resultat
     public function setValeur(?string $valeur): static
     {
         $this->valeur = $valeur;
+
+        return $this;
+    }
+
+    public function getMatiereBio(): ?MatiereBio
+    {
+        return $this->matiereBio;
+    }
+
+    public function setMatiereBio(?MatiereBio $matiereBio): static
+    {
+        $this->matiereBio = $matiereBio;
+
+        return $this;
+    }
+
+    public function getExamen(): ?Examen
+    {
+        return $this->examen;
+    }
+
+    public function setExamen(?Examen $examen): static
+    {
+        $this->examen = $examen;
 
         return $this;
     }
